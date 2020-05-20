@@ -1,0 +1,82 @@
+﻿@model IEnumerable<AcornBox.WebUI.ViewModels.FileEntries.FileEntryViewModel>
+
+@{
+    ViewData["Title"] = "File Entries";
+}
+
+<div class="card mb-3">
+    <div class="card-header">File Upload</div>
+    <div class="card-body">
+        <div>
+            <form method="post" asp-action="Upload" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="file" class="col-form-label">File : </label>
+                    <input type="file" name="file" class="form-control-file" accept=".csv" />
+                    <small class="form-text text-muted">Select *.csv file</small>
+                </div>
+                <input type="submit" name="submit" value="Submit" />
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">File Listing</div>
+    <div class="card-body">
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Id)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Length)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Schema)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.JobId) <span title="Hangfire Job Id">&#10067;</span>
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.WorkerName) <span title="The worker who generated schema">&#10067;</span>
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Length)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Schema", "Schema", new { item.Id })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.JobId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.WorkerName)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Delete", "Delete", new { item.Id })
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

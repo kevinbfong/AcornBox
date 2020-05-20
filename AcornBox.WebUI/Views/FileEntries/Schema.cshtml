@@ -1,0 +1,19 @@
+﻿@model AcornBox.WebUI.ViewModels.FileEntries.FileEntryViewModel
+
+@{
+    ViewData["Title"] = "Schema";
+}
+
+<h1>Schema</h1>
+
+<div>
+    <h4>@Html.DisplayFor(model => model.Id) - @Html.DisplayFor(model => model.Name) - Schema</h4>
+    <hr />
+    <div>
+        <code id="csv-schema" style="display:block; white-space:pre-wrap">@Html.DisplayFor(model => model.Schema)</code>
+    </div>    
+    <hr />
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>

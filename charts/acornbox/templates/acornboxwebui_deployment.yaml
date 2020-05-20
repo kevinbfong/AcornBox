@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-acornboxwebui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-acornboxwebui
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-acornboxwebui
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: acornboxwebui
+          image: "acornboxwebui:dev"
+          imagePullPolicy: Never
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: ConnectionStrings__HangfireConnection
+              value: "Server={{ .Release.Name }}-mssql-linux; Database=AcornBox; User=sa; Password=Your_password123;"
+              #value: "Server=acornbox.db; Database=AcornBox; User=sa; Password=Your_password123;"
+            - name: ConnectionStrings__AcornBoxDatabase
+              value: "Server={{ .Release.Name }}-mssql-linux; Database=AcornBox; User=sa; Password=Your_password123;"
+              #value: "Server=acornbox.db; Database=AcornBox; User=sa; Password=Your_password123;"
+          volumeMounts:
+            - name: data
+              mountPath: /mnt/share                   
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-acornbox

@@ -1,0 +1,22 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1
+ARG BUILD_CONFIGURATION=Debug
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://+:80
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+EXPOSE 80
+
+WORKDIR /src
+COPY ["AcornBox.Application/AcornBox.Application.csproj", "AcornBox.Application/"]
+COPY ["AcornBox.Common/AcornBox.Common.csproj", "AcornBox.Common/"]
+COPY ["AcornBox.Domain/AcornBox.Domain.csproj", "AcornBox.Domain/"]
+COPY ["AcornBox.Persistence/AcornBox.Persistence.csproj", "AcornBox.Persistence/"]
+COPY ["AcornBox.WebUI/AcornBox.WebUI.csproj", "AcornBox.WebUI/"]
+
+RUN dotnet restore "AcornBox.WebUI/AcornBox.WebUI.csproj"
+COPY . .
+WORKDIR "/src/AcornBox.WebUI"
+RUN dotnet build --no-restore "AcornBox.WebUI.csproj" -c $BUILD_CONFIGURATION
+
+RUN echo "exec dotnet run --no-build --no-launch-profile -c $BUILD_CONFIGURATION --" > /entrypoint.sh
+
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]

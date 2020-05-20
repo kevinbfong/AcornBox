@@ -1,0 +1,4 @@
+mssql-linux:
+  acceptEula:
+    value: "Y"
+  sapassword: Your_password123

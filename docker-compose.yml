@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+
+  acornbox.db:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
+  
+  acornbox.webui:
+    image: ${DOCKER_REGISTRY-}acornboxwebui
+    build:
+      context: .
+      dockerfile: AcornBox.WebUI/Dockerfile
+    environment:
+    - ConnectionStrings__AcornBoxDatabase=Server=acornbox.db; Database=AcornBox; User=sa; Password=Your_password123;
+    - ConnectionStrings__HangfireConnection=Server=acornbox.db; Database=AcornBox; User=sa; Password=Your_password123;
+    - Volume=/mnt/share
+    ports:
+    - "8000:80"
+    volumes:
+    - C:\Users\fongkev\source\repos\AcornBox\Storage:/mnt/share
+    depends_on:
+    - acornbox.db
+
+  acornbox.worker:
+    image: ${DOCKER_REGISTRY-}acornboxworker
+    build:
+      context: .
+      dockerfile: AcornBox.Worker/Dockerfile
+    environment:
+    - ConnectionStrings__HangfireConnection=Server=acornbox.db; Database=AcornBox; User=sa; Password=Your_password123;
+    - AcornBoxWebUI=http://acornbox.webui
+    volumes:
+    - C:\Users\fongkev\source\repos\AcornBox\Storage:/mnt/share
+    depends_on:
+    - acornbox.db
+    - acornbox.webui
+
