@@ -1,16 +1,17 @@
 # AcornBox
-Hangfire Sandbox
+
+*AcornBox* generates csv schemas. Upload csv files and a scalable worker will generate the files' csv schema.
 
 ## Guided Tour
 
-Using *Git Bash*,
+Using Git Bash,
 
-  1. Delete your *Minikube* vm (a one node *Kubernete* cluster).
+  1. Delete your Minikube vm (a one node Kubernete cluster).
       ```
       minikube delete
       ```
 
-  2. Create your *Minikube* vm
+  2. Create your Minikube vm
       ```
       minikube start
       ```
@@ -25,22 +26,22 @@ Using *Git Bash*,
       cd AcornBox
       ```
 
-  5. Use *Minikube's Docker* daemon instead of your local (so the subsequent images are available in *Minikube*).
+  5. Use Minikube's Docker daemon instead of your local (so the subsequent images are available in Minikube).
       ```
       eval $(minikube docker-env)
       ```
 
-  6. Build the `acornboxwebui` *Docker* image.
+  6. Build the `acornboxwebui` Docker image.
       ```
       docker build -f AcornBox.WebUI/Dockerfile -t acornboxwebui:dev .
       ```
 
-  7. Build the `acornboxwebui` *Docker* image.
+  7. Build the `acornboxwebui` Docker image.
       ```
       docker build -f AcornBox.Worker/Dockerfile -t acornboxworker:dev .
       ```
       
-  8. Install the application into *Kubernetes*.
+  8. Install the application into Kubernetes.
       ```
       helm install acornbox charts/acornbox
       ```
@@ -62,8 +63,14 @@ Using *Git Bash*,
       minikube service acornbox-acornboxwebui
       ```
       
+  10. Explore the application. 
+       1. Select *Hangfire* from the navbar. This will open the Hangfire Dashboard in a new tab. Here we can see information about our jobs.
+       2. In the Hangfire Dashboard, select *Servers* from the nav bar, here we see our one worker instance. Let's adds two more instances (for a total of three), lets scale out.
+       3. Back in *Git Bash*, enter `kubectl scale deployment acornbox-acornboxworker --replicas=3` and then verify with `kubectl get deployments`.
+       4. Back in the Hangfire Dashboard, we should now see three instances of our worker (refresh if you don't).
+       5. Back in the main application, quickly upload (one after the other) seven (7) csv files (note: the files need to have a `.csv` extension, have a `,` field delimiter, and a header record).
+       6. ...
+      
 ### Todos
-  * `kubectl get deployments` scaling example / step
-  * `kubectl scale deployment acornbox-acornboxworker --replicas=3` scaling example / step
-  * `helm uninstall acornbox` clean up step
+  * `helm uninstall acornbox` clean up step, probably redundant.
   * `minikube delete` clean up step
